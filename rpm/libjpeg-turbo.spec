@@ -1,6 +1,6 @@
 Summary: A library for manipulating JPEG image format files
 Name: libjpeg-turbo
-Version: 1.3.0
+Version: 1.5.3
 Release: 0
 License: IJG
 Group: System/Libraries
@@ -47,10 +47,19 @@ The libjpeg-static package contains the statically linkable version of libjpeg.
 Linking to static libraries is discouraged for most applications, but it is
 necessary for some boot packages.
 
+%package tools
+Summary: Client programs which use the libjpeg-turbo library
+Requires: %{name} = %{version}-%{release}
+
+%description tools
+The libjpeg-turbo-tools package contains client programs for libjpeg-turbo. 
+You'll also need to have the libjpeg-turbo package installed.
+
 %prep
-%setup -q -n %{name}-%{version}/libjpeg
+%setup -q -n %{name}-%{version}/%{name}
 
 %build
+autoreconf -fiv
 %configure --enable-shared --enable-static
 
 make libdir=%{_libdir} %{?_smp_mflags}
@@ -65,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 # We don't ship .la files.
 rm $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT/usr/share/doc
+rm -rf $RPM_BUILD_ROOT%{_mandir}/*
+
+chmod -x README.md
 
 %post -p /sbin/ldconfig
 
@@ -72,18 +84,21 @@ rm -rf $RPM_BUILD_ROOT/usr/share/doc
 
 %files
 %defattr(-,root,root)
-%doc README
+%doc README.md
 %{_libdir}/libjpeg.so.*
 %{_libdir}/libturbojpeg.so.*
-%{_bindir}/*
-%{_mandir}/*/*
 
 %files devel
 %defattr(-,root,root)
 %{_libdir}/libjpeg.so
 %{_libdir}/libturbojpeg.so
+%{_libdir}/pkgconfig/libjpeg.pc
+%{_libdir}/pkgconfig/libturbojpeg.pc
 /usr/include/*.h
 
 %files static
 %defattr(-,root,root)
 %{_libdir}/*.a
+
+%files tools
+%{_bindir}/*
