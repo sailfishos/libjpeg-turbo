@@ -55,6 +55,14 @@ Requires: %{name} = %{version}-%{release}
 The libjpeg-turbo-tools package contains client programs for libjpeg-turbo. 
 You'll also need to have the libjpeg-turbo package installed.
 
+%package doc
+Summary:   Documentation for %{name}
+Group:     Documentation
+Requires:  %{name} = %{version}-%{release}
+
+%description doc
+Man pages and developer documentation for %{name}.
+
 %prep
 %setup -q -n %{name}-%{version}/%{name}
 
@@ -71,12 +79,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %makeinstall
 
+mv $RPM_BUILD_ROOT%{_docdir}/%{name}{,-%{version}}
+cp -r doc/html $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html
+rm $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/{LICENSE.md,README.ijg}
+ln -s ../../licenses/%{name}-%{version}/README.ijg \
+   $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.ijg
+
 # We don't ship .la files.
 rm $RPM_BUILD_ROOT%{_libdir}/*.la
-rm -rf $RPM_BUILD_ROOT/usr/share/doc
-rm -rf $RPM_BUILD_ROOT%{_mandir}/*
-
-chmod -x README.md
 
 %post -p /sbin/ldconfig
 
@@ -84,7 +94,7 @@ chmod -x README.md
 
 %files
 %defattr(-,root,root)
-%doc README.md
+%license LICENSE.md README.ijg
 %{_libdir}/libjpeg.so.*
 %{_libdir}/libturbojpeg.so.*
 
@@ -102,3 +112,8 @@ chmod -x README.md
 
 %files tools
 %{_bindir}/*
+
+%files doc
+%defattr(-,root,root)
+%{_mandir}/man1/*
+%{_docdir}/%{name}-%{version}
