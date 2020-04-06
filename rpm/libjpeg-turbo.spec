@@ -1,15 +1,16 @@
 Summary: A library for manipulating JPEG image format files
 Name: libjpeg-turbo
-Version: 1.5.3
-Release: 0
+Version: 2.0.4
+Release: 1
 License: IJG
-Group: System/Libraries
-URL: http://www.libjpeg-turbo.org/
+URL: http://sourceforge.net/projects/libjpeg-turbo
 
 Source0: %{name}-%{version}.tar.gz
 
-BuildRequires: autoconf libtool nasm
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc
+BuildRequires: cmake
+BuildRequires: libtool
+BuildRequires: nasm
 
 %description
 The libjpeg package contains a library of functions for manipulating
@@ -23,7 +24,6 @@ Wrjpgcom inserts text comments into a JPEG file.
 
 %package devel
 Summary: Development tools for programs which will use the libjpeg library
-Group: Development/Libraries
 Requires: libjpeg-turbo = %{version}-%{release}
 Provides: libjpeg-devel
 
@@ -38,7 +38,6 @@ package installed.
 
 %package static
 Summary: Static JPEG image format file library
-Group: Development/Libraries
 Requires: libjpeg-turbo-devel = %{version}-%{release}
 Provides: libjpeg-static
 
@@ -57,27 +56,22 @@ You'll also need to have the libjpeg-turbo package installed.
 
 %package doc
 Summary:   Documentation for %{name}
-Group:     Documentation
 Requires:  %{name} = %{version}-%{release}
 
 %description doc
 Man pages and developer documentation for %{name}.
 
 %prep
-%setup -q -n %{name}-%{version}/%{name}
+%autosetup -p1 -n %{name}-%{version}/%{name}	
 
 %build
-autoreconf -fiv
-%configure --enable-shared --enable-static
+%{cmake} -DWITH_SIMD=0 \
+         -DWITH_MEM_SRCDST=0 .
 
-make libdir=%{_libdir} %{?_smp_mflags}
-
-LD_LIBRARY_PATH=$PWD:$LD_LIBRARY_PATH make test
+make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
-%makeinstall
+make install DESTDIR=%{buildroot}
 
 mv $RPM_BUILD_ROOT%{_docdir}/%{name}{,-%{version}}
 cp -r doc/html $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html
@@ -85,8 +79,8 @@ rm $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/{LICENSE.md,README.ijg}
 ln -s ../../licenses/%{name}-%{version}/README.ijg \
    $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.ijg
 
-# We don't ship .la files.
-rm $RPM_BUILD_ROOT%{_libdir}/*.la
+%check
+LD_LIBRARY_PATH=%{buildroot}%{_libdir} make test %{?_smp_mflags}
 
 %post -p /sbin/ldconfig
 
