@@ -1,6 +1,6 @@
 Summary: A library for manipulating JPEG image format files
 Name: libjpeg-turbo
-Version: 2.0.4
+Version: 2.1.0
 Release: 1
 License: IJG
 URL: http://sourceforge.net/projects/libjpeg-turbo
@@ -62,13 +62,13 @@ Requires:  %{name} = %{version}-%{release}
 Man pages and developer documentation for %{name}.
 
 %prep
-%autosetup -p1 -n %{name}-%{version}/%{name}	
+%autosetup -p1 -n %{name}-%{version}/%{name}
 
 %build
 %{cmake} -DWITH_SIMD=0 \
          -DWITH_MEM_SRCDST=0 .
 
-make %{?_smp_mflags}
+%make_build
 
 %install
 make install DESTDIR=%{buildroot}
@@ -98,6 +98,7 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} make test %{?_smp_mflags}
 %{_libdir}/libturbojpeg.so
 %{_libdir}/pkgconfig/libjpeg.pc
 %{_libdir}/pkgconfig/libturbojpeg.pc
+%{_libdir}/cmake/libjpeg-turbo/*.cmake
 /usr/include/*.h
 
 %files static
