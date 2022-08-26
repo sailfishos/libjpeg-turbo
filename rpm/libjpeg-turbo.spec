@@ -66,8 +66,7 @@ Man pages and developer documentation for %{name}.
 
 %build
 %{cmake} -DBUILD="$(sed 's/+.*//' <<<"%{version}")" \
-         -DWITH_SIMD=0 \
-         -DWITH_MEM_SRCDST=0 .
+         -DWITH_SIMD=0 .
 
 %make_build
 
