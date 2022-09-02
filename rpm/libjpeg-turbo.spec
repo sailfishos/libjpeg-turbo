@@ -1,9 +1,9 @@
 Summary: A library for manipulating JPEG image format files
 Name: libjpeg-turbo
-Version: 2.1.0
+Version: 2.1.4
 Release: 1
 License: IJG
-URL: http://sourceforge.net/projects/libjpeg-turbo
+URL: https://libjpeg-turbo.org/
 
 Source0: %{name}-%{version}.tar.gz
 
@@ -51,8 +51,7 @@ Summary: Client programs which use the libjpeg-turbo library
 Requires: %{name} = %{version}-%{release}
 
 %description tools
-The libjpeg-turbo-tools package contains client programs for libjpeg-turbo. 
-You'll also need to have the libjpeg-turbo package installed.
+The libjpeg-turbo-tools package contains client programs for libjpeg-turbo.
 
 %package doc
 Summary:   Documentation for %{name}
