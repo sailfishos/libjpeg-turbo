@@ -64,8 +64,7 @@ Man pages and developer documentation for %{name}.
 %autosetup -p1 -n %{name}-%{version}/%{name}
 
 %build
-%cmake -DBUILD="$(sed 's/+.*//' <<<"%{version}")" \
-       -DWITH_SIMD=0
+%cmake -DBUILD="$(sed 's/+.*//' <<<"%{version}")"
 
 %cmake_build
 
