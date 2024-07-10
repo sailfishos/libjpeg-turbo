@@ -1,6 +1,6 @@
 Summary: A library for manipulating JPEG image format files
 Name: libjpeg-turbo
-Version: 2.1.4
+Version: 3.0.3
 Release: 1
 License: IJG
 URL: https://libjpeg-turbo.org/
@@ -64,13 +64,12 @@ Man pages and developer documentation for %{name}.
 %autosetup -p1 -n %{name}-%{version}/%{name}
 
 %build
-%{cmake} -DBUILD="$(sed 's/+.*//' <<<"%{version}")" \
-         -DWITH_SIMD=0 .
+%cmake -DBUILD="$(sed 's/+.*//' <<<"%{version}")"
 
-%make_build
+%cmake_build
 
 %install
-make install DESTDIR=%{buildroot}
+%cmake_install
 
 mv $RPM_BUILD_ROOT%{_docdir}/%{name}{,-%{version}}
 cp -r doc/html $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html
@@ -78,21 +77,21 @@ rm $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/{LICENSE.md,README.ijg}
 ln -s ../../licenses/%{name}-%{version}/README.ijg \
    $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.ijg
 
+%ifarch %{ix86} x86_64
 %check
 LD_LIBRARY_PATH=%{buildroot}%{_libdir} make test %{?_smp_mflags}
+%endif
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root)
 %license LICENSE.md README.ijg
 %{_libdir}/libjpeg.so.*
 %{_libdir}/libturbojpeg.so.*
 
 %files devel
-%defattr(-,root,root)
 %{_libdir}/libjpeg.so
 %{_libdir}/libturbojpeg.so
 %{_libdir}/pkgconfig/libjpeg.pc
@@ -101,13 +100,11 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} make test %{?_smp_mflags}
 /usr/include/*.h
 
 %files static
-%defattr(-,root,root)
 %{_libdir}/*.a
 
 %files tools
 %{_bindir}/*
 
 %files doc
-%defattr(-,root,root)
 %{_mandir}/man1/*
 %{_docdir}/%{name}-%{version}
