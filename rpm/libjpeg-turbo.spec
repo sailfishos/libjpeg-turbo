@@ -1,9 +1,9 @@
 Summary: A library for manipulating JPEG image format files
 Name: libjpeg-turbo
-Version: 3.0.3
+Version: 3.1.4.1
 Release: 1
-License: IJG
-URL: https://libjpeg-turbo.org/
+License: IJG and BSD-3-Clause
+URL: https://github.com/sailfishos/libjpeg-turbo
 
 Source0: %{name}-%{version}.tar.gz
 
@@ -72,7 +72,7 @@ Man pages and developer documentation for %{name}.
 %cmake_install
 
 mv $RPM_BUILD_ROOT%{_docdir}/%{name}{,-%{version}}
-cp -r doc/html $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html
+cp -r doc/turbojpeg $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/turbojpeg
 rm $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/{LICENSE.md,README.ijg}
 ln -s ../../licenses/%{name}-%{version}/README.ijg \
    $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.ijg
